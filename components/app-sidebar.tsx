@@ -25,6 +25,7 @@ import {
   CircleHelpIcon,
 } from "lucide-react"
 import { adminApi, clearAdminToken, type AdminUser } from "@/lib/api"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const navMain = [
   {
@@ -40,6 +41,11 @@ const navMain = [
   {
     title: "Workouts",
     url: "/dashboard/workouts",
+    icon: <DumbbellIcon />,
+  },
+  {
+    title: "Exercises",
+    url: "/dashboard/exercises",
     icon: <DumbbellIcon />,
   },
   {
@@ -83,30 +89,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const user = adminUser
     ? {
-        name: adminUser.username,
-        email: adminUser.email,
-        avatar: "",
-      }
+      name: adminUser.username,
+      email: adminUser.email,
+      avatar: "",
+    }
     : {
-        name: "Admin",
-        email: "Loading…",
-        avatar: "",
-      }
+      name: "Admin",
+      email: "Loading…",
+      avatar: "",
+    }
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex items-center justify-between">
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="/dashboard">
-                <ShieldCheckIcon className="size-5!" />
                 <span className="text-base font-semibold">SmaCoFit Admin</span>
               </a>
             </SidebarMenuButton>
+            <ThemeToggle />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

@@ -145,10 +145,79 @@ export interface RegistrationDataPoint {
   users: number
 }
 
+export interface AdminExercise {
+  id: string
+  name: string
+  slug: string
+  description: string
+  category: string
+  muscleGroups: string[]
+  secondaryMuscles: string[]
+  equipmentRequired: string[]
+  difficulty: string
+  instructions: string[]
+  tips: string[]
+  imageUrl: string | null
+  videoUrl: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export type AdminExerciseCreate = Omit<AdminExercise, "id" | "createdAt" | "updatedAt">
+export type AdminExerciseUpdate = Partial<AdminExerciseCreate>
+
+async function adminApiCall<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getAdminToken()
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options?.headers,
+    },
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail ?? `Request failed: ${res.status}`)
+  }
+  return res.json()
+}
+
 export const adminApi = {
   me: () => adminFetch<AdminUser>("/admin/api/me"),
   stats: () => adminFetch<AdminStats>("/admin/api/stats"),
   users: () => adminFetch<AdminUserRow[]>("/admin/api/users"),
   chart: () => adminFetch<RegistrationDataPoint[]>("/admin/api/chart/registrations"),
+  exercises: {
+    list: () => adminFetch<AdminExercise[]>("/admin/api/exercises"),
+    create: (data: AdminExerciseCreate) => adminApiCall<AdminExercise>("/admin/api/exercises", { method: "POST", body: JSON.stringify(data) }),
+    update: (id: string, data: AdminExerciseUpdate) => adminApiCall<AdminExercise>(`/admin/api/exercises/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    delete: (id: string) => adminApiCall<{ message: string }>(`/admin/api/exercises/${id}`, { method: "DELETE" }),
+    uploadImage: async (file: File) => {
+      const formData = new FormData()
+      formData.append("file", file)
+      const token = getAdminToken()
+      const res = await fetch(`${API_URL}/admin/api/exercises/upload/image`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
+      if (!res.ok) throw new Error("Image upload failed")
+      return res.json() as Promise<{ url: string }>
+    },
+    uploadVideo: async (file: File) => {
+      const formData = new FormData()
+      formData.append("file", file)
+      const token = getAdminToken()
+      const res = await fetch(`${API_URL}/admin/api/exercises/upload/video`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
+      if (!res.ok) throw new Error("Video upload failed")
+      return res.json() as Promise<{ url: string }>
+    },
+  }
 }
 
