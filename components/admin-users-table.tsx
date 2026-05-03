@@ -11,15 +11,18 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import type { AdminUserRow } from "@/lib/api"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, PencilIcon, Trash2Icon } from "lucide-react"
 
 interface AdminUsersTableProps {
   data: AdminUserRow[]
   loading?: boolean
+  onEdit?: (user: AdminUserRow) => void
+  onDelete?: (id: string) => void
 }
 
-export function AdminUsersTable({ data, loading }: AdminUsersTableProps) {
+export function AdminUsersTable({ data, loading, onEdit, onDelete }: AdminUsersTableProps) {
   const [search, setSearch] = React.useState("")
 
   const filtered = React.useMemo(() => {
@@ -53,22 +56,20 @@ export function AdminUsersTable({ data, loading }: AdminUsersTableProps) {
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted">
             <TableRow>
-              <TableHead>Username</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Provider</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">🔥 Streak</TableHead>
-              <TableHead className="text-right">Push-ups</TableHead>
-              <TableHead className="text-right">Sit-ups</TableHead>
-              <TableHead>Joined</TableHead>
+              <TableHead className="text-center">Username</TableHead>
+              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Provider</TableHead>
+              <TableHead className="text-center">Role</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Joined</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: 9 }).map((_, j) => (
+                  {Array.from({ length: 7 }).map((_, j) => (
                     <TableCell key={j}>
                       <div className="h-4 animate-pulse rounded bg-muted" />
                     </TableCell>
@@ -77,28 +78,28 @@ export function AdminUsersTable({ data, loading }: AdminUsersTableProps) {
               ))
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   No users found.
                 </TableCell>
               </TableRow>
             ) : (
               filtered.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.username}</TableCell>
-                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium text-center">{user.username}</TableCell>
+                  <TableCell className="text-muted-foreground text-center">{user.email}</TableCell>
+                  <TableCell className="text-center">
                     <Badge variant="outline" className="capitalize">
                       {user.authProvider}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     {user.is_admin ? (
                       <Badge>Admin</Badge>
                     ) : (
                       <Badge variant="secondary">User</Badge>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     {user.deletedAt ? (
                       <Badge variant="destructive">Deleted</Badge>
                     ) : (
@@ -107,26 +108,22 @@ export function AdminUsersTable({ data, loading }: AdminUsersTableProps) {
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {user.currentStreak}
-                    {user.longestStreak > 0 && (
-                      <span className="ml-1 text-xs text-muted-foreground">
-                        / {user.longestStreak} best
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {user.totalPushUps.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {user.totalSitUps.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
+                  <TableCell className="text-muted-foreground text-sm text-center">
                     {new Date(user.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
                     })}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <Button variant="ghost" size="icon" onClick={() => onEdit?.(user)}>
+                        <PencilIcon className="size-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete?.(user.id)}>
+                        <Trash2Icon className="size-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

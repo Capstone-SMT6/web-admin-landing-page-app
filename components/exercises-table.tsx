@@ -254,152 +254,160 @@ export function ExercisesTable() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>{editingId ? "Edit Exercise" : "New Exercise"}</DialogTitle>
             <DialogDescription>
               {editingId ? "Make changes to your exercise here." : "Add a new exercise to the database."}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSave} className="space-y-4 mt-6">
-            <div className="space-y-2">
-              <Label>Name</Label>
-              <Input
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Slug</Label>
-              <Input
-                required
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="e.g. standard-push-up"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Input
-                required
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select value={formData.category} onValueChange={(val) => setFormData({ ...formData, category: val })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="strength">Strength</SelectItem>
-                    <SelectItem value="cardio">Cardio</SelectItem>
-                    <SelectItem value="flexibility">Flexibility</SelectItem>
-                    <SelectItem value="balance">Balance</SelectItem>
-                  </SelectContent>
-                </Select>
+          <form onSubmit={handleSave} className="space-y-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Slug</Label>
+                  <Input
+                    required
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="e.g. standard-push-up"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Input
+                    required
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Category</Label>
+                    <Select value={formData.category} onValueChange={(val) => setFormData({ ...formData, category: val })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="strength">Strength</SelectItem>
+                        <SelectItem value="cardio">Cardio</SelectItem>
+                        <SelectItem value="flexibility">Flexibility</SelectItem>
+                        <SelectItem value="balance">Balance</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Difficulty</Label>
+                    <Select value={formData.difficulty} onValueChange={(val) => setFormData({ ...formData, difficulty: val })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="beginner">Beginner</SelectItem>
+                        <SelectItem value="intermediate">Intermediate</SelectItem>
+                        <SelectItem value="advanced">Advanced</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Image File</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                    />
+                    {uploadingImage && <p className="text-xs text-muted-foreground">Uploading image...</p>}
+                    {formData.imageUrl && (
+                      <p className="text-xs text-green-600 truncate">
+                        Uploaded: <a href={formData.imageUrl} target="_blank" rel="noreferrer" className="underline">View</a>
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Video File</Label>
+                    <Input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoUpload}
+                      disabled={uploadingVideo}
+                    />
+                    {uploadingVideo && <p className="text-xs text-muted-foreground">Uploading video...</p>}
+                    {formData.videoUrl && (
+                      <p className="text-xs text-green-600 truncate">
+                        Uploaded: <a href={formData.videoUrl} target="_blank" rel="noreferrer" className="underline">View</a>
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Difficulty</Label>
-                <Select value={formData.difficulty} onValueChange={(val) => setFormData({ ...formData, difficulty: val })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                  </SelectContent>
-                </Select>
+
+              {/* Right Column */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Primary Muscles (comma separated)</Label>
+                  <Input
+                    required
+                    value={formData.muscleGroups.join(", ")}
+                    onChange={(e) => setFormData({ ...formData, muscleGroups: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+                    placeholder="e.g. chest, triceps"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Secondary Muscles (comma separated)</Label>
+                  <Input
+                    value={formData.secondaryMuscles.join(", ")}
+                    onChange={(e) => setFormData({ ...formData, secondaryMuscles: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+                    placeholder="e.g. shoulders, core"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Equipment Required (comma separated)</Label>
+                  <Input
+                    value={formData.equipmentRequired.join(", ")}
+                    onChange={(e) => setFormData({ ...formData, equipmentRequired: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+                    placeholder="e.g. dumbbells, bench"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Instructions (one per line)</Label>
+                  <textarea
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                    value={formData.instructions.join("\n")}
+                    onChange={(e) => setFormData({ ...formData, instructions: e.target.value.split("\n").map(s => s.trim()).filter(Boolean) })}
+                    placeholder="Step 1...&#10;Step 2..."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Tips (one per line)</Label>
+                  <textarea
+                    className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.tips.join("\n")}
+                    onChange={(e) => setFormData({ ...formData, tips: e.target.value.split("\n").map(s => s.trim()).filter(Boolean) })}
+                    placeholder="Keep your back straight...&#10;Breathe out on exertion..."
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Primary Muscles (comma separated)</Label>
-              <Input
-                required
-                value={formData.muscleGroups.join(", ")}
-                onChange={(e) => setFormData({ ...formData, muscleGroups: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
-                placeholder="e.g. chest, triceps"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Secondary Muscles (comma separated)</Label>
-              <Input
-                value={formData.secondaryMuscles.join(", ")}
-                onChange={(e) => setFormData({ ...formData, secondaryMuscles: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
-                placeholder="e.g. shoulders, core"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Equipment Required (comma separated)</Label>
-              <Input
-                value={formData.equipmentRequired.join(", ")}
-                onChange={(e) => setFormData({ ...formData, equipmentRequired: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
-                placeholder="e.g. dumbbells, bench"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Instructions (one per line)</Label>
-              <textarea
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
-                value={formData.instructions.join("\n")}
-                onChange={(e) => setFormData({ ...formData, instructions: e.target.value.split("\n").map(s => s.trim()).filter(Boolean) })}
-                placeholder="Step 1...&#10;Step 2..."
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Tips (one per line)</Label>
-              <textarea
-                className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={formData.tips.join("\n")}
-                onChange={(e) => setFormData({ ...formData, tips: e.target.value.split("\n").map(s => s.trim()).filter(Boolean) })}
-                placeholder="Keep your back straight...&#10;Breathe out on exertion..."
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Image File</Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploadingImage}
-                />
-                {uploadingImage && <p className="text-xs text-muted-foreground">Uploading image...</p>}
-                {formData.imageUrl && (
-                  <p className="text-xs text-green-600 truncate">
-                    Uploaded: <a href={formData.imageUrl} target="_blank" rel="noreferrer" className="underline">View</a>
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Video File</Label>
-                <Input
-                  type="file"
-                  accept="video/*"
-                  onChange={handleVideoUpload}
-                  disabled={uploadingVideo}
-                />
-                {uploadingVideo && <p className="text-xs text-muted-foreground">Uploading video...</p>}
-                {formData.videoUrl && (
-                  <p className="text-xs text-green-600 truncate">
-                    Uploaded: <a href={formData.videoUrl} target="_blank" rel="noreferrer" className="underline">View</a>
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-4 flex justify-end gap-2">
+            <div className="pt-2 flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
               <Button type="submit" disabled={saving}>{saving ? "Saving..." : "Save"}</Button>
             </div>

@@ -188,6 +188,8 @@ export const adminApi = {
   me: () => adminFetch<AdminUser>("/admin/api/me"),
   stats: () => adminFetch<AdminStats>("/admin/api/stats"),
   users: () => adminFetch<AdminUserRow[]>("/admin/api/users"),
+  updateUser: (id: string, data: Partial<AdminUserRow>) => adminApiCall<AdminUserRow>(`/api/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteUser: (id: string) => adminApiCall<{ message: string }>(`/api/users/${id}`, { method: "DELETE" }),
   chart: () => adminFetch<RegistrationDataPoint[]>("/admin/api/chart/registrations"),
   exercises: {
     list: () => adminFetch<AdminExercise[]>("/admin/api/exercises"),
