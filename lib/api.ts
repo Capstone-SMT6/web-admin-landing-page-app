@@ -167,6 +167,25 @@ export interface AdminExercise {
 export type AdminExerciseCreate = Omit<AdminExercise, "id" | "createdAt" | "updatedAt">
 export type AdminExerciseUpdate = Partial<AdminExerciseCreate>
 
+export interface AdminFoodItem {
+  id: string
+  name: string
+  category: string            // "makanan" | "minuman" | "snack"
+  calories_per_serving: number
+  protein_per_serving: number
+  carbs_per_serving: number
+  fat_per_serving: number
+  serving_unit: string        // e.g. "porsi", "gram", "ml"
+  serving_size_g: number | null
+  imageUrl: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export type AdminFoodItemCreate = Omit<AdminFoodItem, "id" | "createdAt" | "updatedAt">
+export type AdminFoodItemUpdate = Partial<AdminFoodItemCreate>
+
 async function adminApiCall<T>(path: string, options?: RequestInit): Promise<T> {
   const token = getAdminToken()
   const res = await fetch(`${API_URL}${path}`, {
@@ -218,6 +237,24 @@ export const adminApi = {
         body: formData,
       })
       if (!res.ok) throw new Error("Video upload failed")
+      return res.json() as Promise<{ url: string }>
+    },
+  },
+  foods: {
+    list: () => adminFetch<AdminFoodItem[]>("/admin/api/foods"),
+    create: (data: AdminFoodItemCreate) => adminApiCall<AdminFoodItem>("/admin/api/foods", { method: "POST", body: JSON.stringify(data) }),
+    update: (id: string, data: AdminFoodItemUpdate) => adminApiCall<AdminFoodItem>(`/admin/api/foods/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    delete: (id: string) => adminApiCall<{ message: string }>(`/admin/api/foods/${id}`, { method: "DELETE" }),
+    uploadImage: async (file: File) => {
+      const formData = new FormData()
+      formData.append("file", file)
+      const token = getAdminToken()
+      const res = await fetch(`${API_URL}/admin/api/foods/upload/image`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
+      if (!res.ok) throw new Error("Image upload failed")
       return res.json() as Promise<{ url: string }>
     },
   }

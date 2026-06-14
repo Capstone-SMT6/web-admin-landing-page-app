@@ -17,12 +17,10 @@ import {
 import {
   LayoutDashboardIcon,
   UsersIcon,
-  DumbbellIcon,
-  MessageSquareIcon,
   BarChart3Icon,
-  ShieldCheckIcon,
   Settings2Icon,
   CircleHelpIcon,
+  Utensils,
 } from "lucide-react"
 import { adminApi, clearAdminToken, type AdminUser } from "@/lib/api"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -39,19 +37,9 @@ const navMain = [
     icon: <UsersIcon />,
   },
   {
-    title: "Workouts",
-    url: "/dashboard/workouts",
-    icon: <DumbbellIcon />,
-  },
-  {
-    title: "Exercises",
-    url: "/dashboard/exercises",
-    icon: <DumbbellIcon />,
-  },
-  {
-    title: "Chat Sessions",
-    url: "/dashboard/chats",
-    icon: <MessageSquareIcon />,
+    title: "Foods",
+    url: "/dashboard/foods",
+    icon: <Utensils />,
   },
   {
     title: "Analytics",

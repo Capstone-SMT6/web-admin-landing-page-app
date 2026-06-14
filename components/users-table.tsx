@@ -43,6 +43,18 @@ export function UsersTable() {
     }
   }
 
+  async function handleBulkDelete(ids: string[]) {
+    if (!confirm(`Are you sure you want to delete the ${ids.length} selected users?`)) return
+    setLoading(true)
+    try {
+      await Promise.all(ids.map(id => adminApi.deleteUser(id)))
+      loadData()
+    } catch (err: any) {
+      alert(err.message)
+      setLoading(false)
+    }
+  }
+
   async function handleSaveEdit(e: React.FormEvent) {
     e.preventDefault()
     if (!editingUser) return
@@ -65,7 +77,7 @@ export function UsersTable() {
   return (
     <div className="space-y-4">
       {error && <div className="text-destructive text-sm px-4 lg:px-6">{error}</div>}
-      <AdminUsersTable data={users} loading={loading} onEdit={setEditingUser} onDelete={handleDelete} />
+      <AdminUsersTable data={users} loading={loading} onEdit={setEditingUser} onDelete={handleDelete} onBulkDelete={handleBulkDelete} />
 
       <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
         <DialogContent>
