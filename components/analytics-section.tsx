@@ -10,10 +10,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Search, Info, TrendingUp, BarChart3, Activity } from "lucide-react";
+import { fetchWikiTrends } from "@/lib/api";
 import {
   parseWikiData,
   getTop10Topics,
@@ -54,14 +54,12 @@ export function AnalyticsSection() {
   React.useEffect(() => {
     async function loadData() {
       try {
-        const res = await fetch("/wiki_trends.json");
-        if (!res.ok) throw new Error("Failed to fetch trends data");
-        const json = await res.json();
+        const json = await fetchWikiTrends();
         const { df, descriptions: desc } = parseWikiData(json);
         setDataPoints(df);
         setDescriptions(desc);
-      } catch (err: any) {
-        setError(err.message || "An error occurred while loading analytics.");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "An error occurred while loading analytics.");
       } finally {
         setLoading(false);
       }

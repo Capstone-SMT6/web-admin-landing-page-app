@@ -260,3 +260,22 @@ export const adminApi = {
   }
 }
 
+export interface WikiTrendEntry {
+  date: string
+  views: string | number
+}
+
+export interface WikiTrendDocument {
+  scraped_at?: string
+  descriptions?: Record<string, string>
+  data?: Record<string, WikiTrendEntry[]>
+}
+
+export async function fetchWikiTrends(): Promise<WikiTrendDocument> {
+  const res = await fetch(`${API_URL}/api/trends/raw`)
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail ?? `Failed to fetch trends: ${res.status}`)
+  }
+  return res.json()
+}
