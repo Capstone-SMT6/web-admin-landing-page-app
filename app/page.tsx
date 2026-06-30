@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +14,8 @@ const content = {
     heroTitle2: "Your data.",
     heroTitle3: "Our system.",
     heroDesc: "SmaCoFit is your intelligent workout companion. Track your exercises with live on-device camera feedback, get posture corrections instantly, fuel with smart macro targets, and consult our AI fitness coach 24/7.",
+    heroCta: "Download on Google Play",
+    heroCtaSub: "Coming soon",
     featuresTag: "§ 01 — Core Mobile Features",
     featuresTitle: "Everything you need to train smarter",
     f1Sub: "On-Device · Private · Real-time",
@@ -27,9 +29,9 @@ const content = {
     f3Desc: "Before every session, SmaCoFit runs a hardware and environment check — then tunes camera resolution and frame-skip thresholds so tracking stays smooth on any device.",
     f3Steps: [
       { label: "Device Check", col: "#67C23A", done: true },
-      { label: "Lighting", col: "#67C23A", done: true },
-      { label: "Position", col: "#67C23A", done: true },
-      { label: "Ready!", col: "#6B7280", done: false }
+      { label: "Lighting",     col: "#67C23A", done: true },
+      { label: "Position",     col: "#67C23A", done: true },
+      { label: "Ready!",       col: "#6B7280", done: false },
     ],
     f4Sub: "BMR · TDEE · Gemini RAG",
     f4Title: "Nutrition & AI Coach",
@@ -37,16 +39,16 @@ const content = {
     howItWorksTag: "§ 02 — How it works",
     howItWorksTitle: "Three steps to a smarter routine",
     howItWorksSteps: [
-      { n: "01", col: "#67C23A", title: "Profile Setup", body: "Enter your age, height, weight and goal. SmaCoFit computes your exact BMR and TDEE, assigns a difficulty gate, and distributes macros to match." },
-      { n: "02", col: "#67C23A", title: "Room Calibration", body: "Hold the phone side-on. SmaCoFit checks room brightness, validates that all required joint landmarks are visible, and auto-adjusts frame rate for your hardware." },
-      { n: "03", col: "#67C23A", title: "Train with Live Feedback", body: "Work through your plan. The on-device model tracks every rep, fires voice cues in Indonesian when form breaks, and logs duration and streaks on completion." }
+      { n: "01", col: "#67C23A", title: "Profile Setup",             body: "Enter your age, height, weight and goal. SmaCoFit computes your exact BMR and TDEE, assigns a difficulty gate, and distributes macros to match." },
+      { n: "02", col: "#67C23A", title: "Room Calibration",          body: "Hold the phone side-on. SmaCoFit checks room brightness, validates that all required joint landmarks are visible, and auto-adjusts frame rate for your hardware." },
+      { n: "03", col: "#67C23A", title: "Train with Live Feedback",  body: "Work through your plan. The on-device model tracks every rep, fires voice cues in Indonesian when form breaks, and logs duration and streaks on completion." },
     ],
     insightsTag: "§ 03 — Fitness Insights Engine",
     insightsSub: "Global Search & Trend Tracking",
     insightsDesc: "essential fitness topics continuously monitored to update SmaCoFit's RAG knowledge base.",
     insightsCtaSub: "EXPLORE THE DATA",
     insightsCtaTitle: "Explore the trends",
-    footerDesc: "On-Device AI · Smart Fitness · Nutrition"
+    footerDesc: "On-Device AI · Smart Fitness · Nutrition",
   },
   id: {
     analytics: "Analisis",
@@ -56,6 +58,8 @@ const content = {
     heroTitle2: "Data Anda.",
     heroTitle3: "Sistem kami.",
     heroDesc: "SmaCoFit adalah pendamping latihan cerdas Anda. Lacak gerakan lewat kamera langsung, dapatkan koreksi postur instan, penuhi target makro harian, dan konsultasikan pelatih AI kami 24/7.",
+    heroCta: "Unduh di Google Play",
+    heroCtaSub: "Segera hadir",
     featuresTag: "§ 01 — Fitur Utama Seluler",
     featuresTitle: "Semua yang Anda butuhkan untuk berlatih lebih cerdas",
     f1Sub: "Di Perangkat · Privat · Real-time",
@@ -69,9 +73,9 @@ const content = {
     f3Desc: "Sebelum memulai sesi, SmaCoFit memeriksa perangkat keras dan lingkungan Anda — kemudian menyesuaikan resolusi kamera dan batas frame-skip agar pelacakan tetap lancar di perangkat apa pun.",
     f3Steps: [
       { label: "Cek Perangkat", col: "#67C23A", done: true },
-      { label: "Pencahayaan", col: "#67C23A", done: true },
-      { label: "Posisi", col: "#67C23A", done: true },
-      { label: "Siap!", col: "#6B7280", done: false }
+      { label: "Pencahayaan",   col: "#67C23A", done: true },
+      { label: "Posisi",        col: "#67C23A", done: true },
+      { label: "Siap!",         col: "#6B7280", done: false },
     ],
     f4Sub: "BMR · TDEE · Gemini RAG",
     f4Title: "Nutrisi & Pelatih AI",
@@ -79,26 +83,50 @@ const content = {
     howItWorksTag: "§ 02 — Cara Kerja",
     howItWorksTitle: "Tiga langkah menuju rutinitas yang lebih cerdas",
     howItWorksSteps: [
-      { n: "01", col: "#67C23A", title: "Pengaturan Profil", body: "Masukkan usia, tinggi, berat badan, dan tujuan Anda. SmaCoFit menghitung BMR dan TDEE Anda secara tepat, menentukan tingkat kesulitan, dan membagi makro nutrisi yang sesuai." },
-      { n: "02", col: "#67C23A", title: "Kalibrasi Ruangan", body: "Posisikan ponsel Anda dari samping. SmaCoFit memeriksa kecerahan ruangan, memastikan semua titik sendi tubuh terlihat, dan menyesuaikan frame rate otomatis sesuai kemampuan perangkat Anda." },
-      { n: "03", col: "#67C23A", title: "Latihan dengan Umpan Balik Langsung", body: "Lakukan latihan sesuai rencana Anda. Model di perangkat melacak setiap repetisi, memberikan petunjuk suara dalam bahasa Indonesia ketika gerakan salah, serta mencatat durasi dan rekor latihan setelah selesai." }
+      { n: "01", col: "#67C23A", title: "Pengaturan Profil",                   body: "Masukkan usia, tinggi, berat badan, dan tujuan Anda. SmaCoFit menghitung BMR dan TDEE Anda secara tepat, menentukan tingkat kesulitan, dan membagi makro nutrisi yang sesuai." },
+      { n: "02", col: "#67C23A", title: "Kalibrasi Ruangan",                   body: "Posisikan ponsel Anda dari samping. SmaCoFit memeriksa kecerahan ruangan, memastikan semua titik sendi tubuh terlihat, dan menyesuaikan frame rate otomatis sesuai kemampuan perangkat Anda." },
+      { n: "03", col: "#67C23A", title: "Latihan dengan Umpan Balik Langsung", body: "Lakukan latihan sesuai rencana Anda. Model di perangkat melacak setiap repetisi, memberikan petunjuk suara dalam bahasa Indonesia ketika gerakan salah, serta mencatat durasi dan rekor latihan setelah selesai." },
     ],
     insightsTag: "§ 03 — Mesin Wawasan Kebugaran",
     insightsSub: "Pencarian Global & Pelacakan Tren",
     insightsDesc: "topik kebugaran penting yang dipantau terus-menerus untuk memperbarui basis pengetahuan RAG SmaCoFit.",
     insightsCtaSub: "JELAJAHI DATA",
     insightsCtaTitle: "Jelajahi tren",
-    footerDesc: "AI di Perangkat · Kebugaran Cerdas · Nutrisi"
-  }
+    footerDesc: "AI di Perangkat · Kebugaran Cerdas · Nutrisi",
+  },
 };
+
+// Fix 6 (code): typed macro rows
+const macroRows: [string, string, string][] = [
+  ["Protein", "35%", "#38BDF8"],
+  ["Carbs",   "45%", "#67C23A"],
+  ["Fat",     "20%", "#3d4461"],
+];
 
 export default function Home() {
   const [lang, setLang] = useState<"en" | "id">("en");
   const t = content[lang];
 
+  // Fix 7: scroll-reveal via IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("anim-visible");
+            observer.unobserve(e.target);
+          }
+        }),
+      { threshold: 0.08 }
+    );
+    document.querySelectorAll(".anim-hidden").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0D0F14] text-zinc-100 font-sans selection:bg-[#2A2F45]">
 
+      {/* Header */}
       <header className="sticky top-0 z-50 bg-[#0D0F14]/90 backdrop-blur-md border-b border-[#2A2F45]">
         <div className="container mx-auto max-w-5xl px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3 sm:gap-6">
@@ -108,7 +136,7 @@ export default function Home() {
             <div className="border-l border-[#2A2F45] pl-3 sm:pl-4">
               <button
                 onClick={() => setLang(lang === "en" ? "id" : "en")}
-                className="flex items-center gap-1.5 text-[10px] font-mono text-[#6B7280] hover:text-white transition-colors bg-[#1C2030]/30 border border-[#2A2F45] rounded px-2 py-0.5"
+                className="flex items-center gap-1.5 text-[10px] font-mono text-[#9CA3AF] hover:text-white transition-colors bg-[#1C2030]/30 border border-[#2A2F45] rounded px-2 py-0.5"
                 title={lang === "en" ? "Switch to Indonesian" : "Ubah ke Bahasa Inggris"}
               >
                 <Image
@@ -117,13 +145,14 @@ export default function Home() {
                   width={12}
                   height={8}
                   className="rounded-sm shrink-0"
+                  style={{ height: "auto" }}
                 />
                 <span className="uppercase font-bold">{lang}</span>
               </button>
             </div>
           </div>
           <div className="flex items-center gap-4 sm:gap-6">
-            <Link href="/analytics" className="text-xs font-mono text-[#6B7280] hover:text-white transition-colors">
+            <Link href="/analytics" className="text-xs font-mono text-[#9CA3AF] hover:text-white transition-colors">
               {t.analytics}
             </Link>
           </div>
@@ -131,21 +160,22 @@ export default function Home() {
       </header>
 
       <main>
+        {/* Hero */}
         <section className="relative border-b border-[#2A2F45] overflow-hidden min-h-[calc(100vh-3.5rem)] flex items-center">
+          {/* Fix 6 (perf): Next.js Image replaces CSS background-image for optimization */}
+          <div className="pointer-events-none absolute inset-0">
+            <Image
+              src="/Hero.png"
+              alt="SmaCoFit app interface preview"
+              fill
+              priority
+              className="object-cover object-right"
+              sizes="100vw"
+            />
+          </div>
           <div
             className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage: "url('/Hero.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center right",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background: "linear-gradient(to right, #0D0F14 38%, #0D0F14bb 58%, transparent 82%)",
-            }}
+            style={{ background: "linear-gradient(to right, #0D0F14 38%, #0D0F14bb 58%, transparent 82%)" }}
           />
           <div
             className="pointer-events-none absolute bottom-0 left-0 right-0 h-24"
@@ -153,34 +183,61 @@ export default function Home() {
           />
 
           <div className="relative container mx-auto max-w-5xl px-6 py-12 md:py-20 w-full">
-            <p className="text-xs font-mono text-[#6B7280] tracking-widest uppercase mb-10">
+            <p className="text-xs font-mono text-[#9CA3AF] tracking-widest uppercase mb-10">
               {t.heroTag}
             </p>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[0.95] text-white mb-10 max-w-3xl">
+            {/* Fix 5 (mobile): text-4xl base → sm:text-5xl → md:text-7xl */}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter leading-[0.95] text-white mb-10 max-w-3xl">
               {t.heroTitle}<br />
               {t.heroTitle2}<br />
               <span className="text-[#67C23A]">{t.heroTitle3}</span>
             </h1>
 
-            <p className="text-base text-[#6B7280] leading-relaxed max-w-lg min-h-[120px] md:min-h-[80px]">
+            {/* Fix 4: body text #9CA3AF (was #6B7280, fails WCAG AA) */}
+            <p className="text-base text-[#9CA3AF] leading-relaxed max-w-lg min-h-[120px] md:min-h-[80px]">
               {t.heroDesc}
             </p>
+
+            {/* Fix 3: placeholder CTA — swap href when Play Store listing is live */}
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href="#"
+                aria-disabled="true"
+                onClick={(e) => e.preventDefault()}
+                className="inline-flex items-center gap-2.5 bg-[#67C23A] text-[#0D0F14] font-bold text-sm px-6 py-3 rounded-xl opacity-80 cursor-not-allowed select-none"
+                title="Available soon on Google Play"
+              >
+                {/* Google Play icon */}
+                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="currentColor" aria-hidden="true">
+                  <path d="M3.18 23.76c.3.17.65.18.97.05L15.94 12 12 8.06 3.18 23.76Zm-1.5-21.5A1.5 1.5 0 0 0 1 3.5v17a1.5 1.5 0 0 0 .68 1.26l11.7-11.7L1.68 2.26ZM20.67 10.2l-2.7-1.54-4.28 4.28 4.28 4.28 2.72-1.55A2.27 2.27 0 0 0 22 13.66a2.27 2.27 0 0 0-1.33-3.46ZM4.15.19a1 1 0 0 0-.97.05L12 8.06 15.94 4.1 4.15.19Z" />
+                </svg>
+                {t.heroCta}
+              </a>
+              <span className="text-xs font-mono text-[#4B5563]">{t.heroCtaSub}</span>
+            </div>
           </div>
         </section>
 
         <div className="container mx-auto max-w-5xl px-6">
+
+          {/* Features */}
           <section className="py-20 border-b border-[#2A2F45]">
-            <div className="mb-16">
-              <p className="text-xs font-mono text-[#6B7280] tracking-widest uppercase mb-2">
+            <div className="mb-16 anim-hidden">
+              <p className="text-xs font-mono text-[#9CA3AF] tracking-widest uppercase mb-2">
                 {t.featuresTag}
               </p>
               <h2 className="text-3xl font-extrabold tracking-tight text-white">
                 {t.featuresTitle}
               </h2>
             </div>
+
             <div className="space-y-px">
-              <div className="group relative overflow-hidden border border-[#2A2F45] rounded-t-3xl bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500 p-10 md:p-14">
+              {/* Feature 1 — AI Pose Detection */}
+              <div
+                className="anim-hidden group relative overflow-hidden border border-[#2A2F45] rounded-t-3xl bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500 p-6 md:p-14"
+                style={{ transitionDelay: "0ms" }}
+              >
                 <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-[#67C23A]/5 blur-3xl" />
                 <svg
                   viewBox="0 0 160 260"
@@ -199,7 +256,7 @@ export default function Home() {
                   <line x1="40" y1="200" x2="36" y2="248" />
                   <line x1="110" y1="140" x2="120" y2="200" />
                   <line x1="120" y1="200" x2="124" y2="248" />
-                  {[[80, 38], [80, 110], [28, 80], [132, 80], [14, 120], [146, 120], [50, 140], [110, 140], [40, 200], [120, 200]].map(([cx, cy], i) => (
+                  {[[80,38],[80,110],[28,80],[132,80],[14,120],[146,120],[50,140],[110,140],[40,200],[120,200]].map(([cx, cy], i) => (
                     <circle key={i} cx={cx} cy={cy} r="4" fill="#6B7280" stroke="none" />
                   ))}
                 </svg>
@@ -207,50 +264,55 @@ export default function Home() {
                 <div className="relative max-w-lg">
                   <span className="inline-block text-[10px] font-mono text-zinc-400 tracking-widest uppercase mb-4 bg-[#1C2030]/50 border border-[#2A2F45] px-3 py-1 rounded-full">{t.f1Sub}</span>
                   <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4 leading-tight">{t.f1Title}</h3>
-                  <p className="text-[#6B7280] text-sm leading-relaxed mb-8">
-                    {t.f1Desc}
-                  </p>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed mb-8">{t.f1Desc}</p>
+                  {/* Fix 8: typed tuple, no any */}
                   <div className="flex flex-wrap gap-x-8 gap-y-3">
-                    {[["Push-Up", "#67C23A"], ["Sit-Up", "#67C23A"], ["Squat", "#67C23A"], ["Plank", "#67C23A"], ["Lunge", "#67C23A"]].map(([ex, col]: any) => (
-                      <span key={ex} className="text-sm font-semibold" style={{ color: col }}>{ex}</span>
+                    {(["Push-Up", "Sit-Up", "Squat", "Plank", "Lunge"] as const).map((ex) => (
+                      <span key={ex} className="text-sm font-semibold text-[#67C23A]">{ex}</span>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="group relative overflow-hidden border border-[#2A2F45] border-t-0 bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500">
+              {/* Feature 2 — Vocal Form Coach */}
+              <div
+                className="anim-hidden group relative overflow-hidden border border-[#2A2F45] border-t-0 bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500"
+                style={{ transitionDelay: "80ms" }}
+              >
                 <div className="md:grid md:grid-cols-2">
-                  <div className="flex items-end justify-center gap-1.5 bg-[#080A0F] px-10 py-14 min-h-[180px] border-r border-[#2A2F45]">
+                  {/* Fix 5 (mobile): added border-b md:border-b-0 so divider renders correctly on mobile */}
+                  <div className="flex items-end justify-center gap-1.5 bg-[#080A0F] px-10 py-14 min-h-[180px] border-b md:border-b-0 md:border-r border-[#2A2F45]">
+                    {/* Fix 7: audio bars now animate via bar-item CSS class */}
                     {[40, 65, 32, 78, 55, 90, 42, 70, 58, 84, 36, 62, 48, 76, 52].map((h, i) => (
                       <div
                         key={i}
-                        className="rounded-full w-2 bg-[#67C23A]/30 group-hover:bg-[#67C23A]/70 transition-all duration-300"
+                        className="bar-item rounded-full w-2 bg-[#67C23A]/40 group-hover:bg-[#67C23A]/80 transition-colors duration-300"
                         style={{
                           height: `${h}%`,
-                          maxHeight: '80px',
-                          minHeight: '6px',
-                          animationDelay: `${i * 80}ms`,
+                          maxHeight: "80px",
+                          minHeight: "6px",
+                          animationDelay: `${i * 90}ms`,
                         }}
                       />
                     ))}
                   </div>
-                  <div className="p-10">
+                  <div className="p-6 md:p-10">
                     <span className="inline-block text-[10px] font-mono text-[#67C23A] tracking-widest uppercase mb-4 bg-[#67C23A]/10 px-3 py-1 rounded-full">{t.f2Sub}</span>
                     <h3 className="text-2xl font-extrabold text-white mb-3 leading-tight">{t.f2Title}</h3>
-                    <p className="text-[#6B7280] text-sm leading-relaxed">
-                      {t.f2Desc}
-                    </p>
+                    <p className="text-[#9CA3AF] text-sm leading-relaxed">{t.f2Desc}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="group relative overflow-hidden border border-[#2A2F45] border-t-0 bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500 p-10">
+              {/* Feature 3 — Smart Calibration */}
+              <div
+                className="anim-hidden group relative overflow-hidden border border-[#2A2F45] border-t-0 bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500 p-6 md:p-10"
+                style={{ transitionDelay: "160ms" }}
+              >
                 <div className="mb-8">
                   <span className="inline-block text-[10px] font-mono text-[#67C23A] tracking-widest uppercase mb-4 bg-[#67C23A]/10 px-3 py-1 rounded-full">{t.f3Sub}</span>
                   <h3 className="text-2xl font-extrabold text-white mb-2 leading-tight">{t.f3Title}</h3>
-                  <p className="text-[#6B7280] text-sm leading-relaxed max-w-md">
-                    {t.f3Desc}
-                  </p>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed max-w-md">{t.f3Desc}</p>
                 </div>
                 <div className="flex items-center gap-0 overflow-x-auto pb-1">
                   {t.f3Steps.map(({ label, col, done }, i, arr) => (
@@ -260,34 +322,36 @@ export default function Home() {
                           className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold border-2 shrink-0"
                           style={{
                             borderColor: col,
-                            backgroundColor: done ? col : 'transparent',
-                            color: done ? '#0D0F14' : col,
+                            backgroundColor: done ? col : "transparent",
+                            color: done ? "#0D0F14" : col,
                           }}
                         >
-                          {done ? '✓' : '→'}
+                          {done ? "✓" : "→"}
                         </div>
                         <span className="text-[10px] font-mono whitespace-nowrap" style={{ color: col }}>{label}</span>
                       </div>
                       {i < arr.length - 1 && (
-                        <div className="h-px w-10 md:w-16 mx-2 mb-5" style={{ backgroundColor: col + '55' }} />
+                        <div className="h-px w-10 md:w-16 mx-2 mb-5" style={{ backgroundColor: col + "55" }} />
                       )}
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="group relative overflow-hidden border border-[#2A2F45] border-t-0 rounded-b-3xl bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500">
+              {/* Feature 4 — Nutrition & AI Coach */}
+              <div
+                className="anim-hidden group relative overflow-hidden border border-[#2A2F45] border-t-0 rounded-b-3xl bg-[#0D0F14] hover:bg-[#0f1118] transition-colors duration-500"
+                style={{ transitionDelay: "240ms" }}
+              >
                 <div className="md:grid md:grid-cols-2">
-                  <div className="p-10 border-r border-[#2A2F45]">
+                  <div className="p-6 md:p-10 border-b md:border-b-0 md:border-r border-[#2A2F45]">
                     <span className="inline-block text-[10px] font-mono text-[#67C23A] tracking-widest uppercase mb-4 bg-[#67C23A]/10 px-3 py-1 rounded-full">{t.f4Sub}</span>
                     <h3 className="text-2xl font-extrabold text-white mb-3 leading-tight">{t.f4Title}</h3>
-                    <p className="text-[#6B7280] text-sm leading-relaxed">
-                      {t.f4Desc}
-                    </p>
+                    <p className="text-[#9CA3AF] text-sm leading-relaxed">{t.f4Desc}</p>
                   </div>
                   <div className="flex items-center justify-center bg-[#080A0F] px-10 py-14 min-h-[180px]">
                     <div className="relative">
-                      <svg viewBox="0 0 120 120" className="w-32 h-32" style={{ transform: 'rotate(-90deg)' }}>
+                      <svg viewBox="0 0 120 120" className="w-32 h-32" style={{ transform: "rotate(-90deg)" }}>
                         <circle cx="60" cy="60" r="48" fill="none" stroke="#38BDF8" strokeWidth="12"
                           strokeDasharray="105.5 195.8" strokeDashoffset="0" strokeLinecap="round" />
                         <circle cx="60" cy="60" r="48" fill="none" stroke="#67C23A" strokeWidth="12"
@@ -297,14 +361,15 @@ export default function Home() {
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-xs font-bold text-white">Macros</span>
-                        <span className="text-[10px] font-mono text-[#6B7280]">2 100 kcal</span>
+                        <span className="text-[10px] font-mono text-[#9CA3AF]">2 100 kcal</span>
                       </div>
                     </div>
+                    {/* Fix 8: typed tuple array, no any */}
                     <div className="ml-6 space-y-3">
-                      {[["Protein", "35%", "#38BDF8"], ["Carbs", "45%", "#67C23A"], ["Fat", "20%", "#3d4461"]].map(([label, pct, col]: any) => (
+                      {macroRows.map(([label, pct, col]) => (
                         <div key={label} className="flex items-center gap-2">
                           <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: col }} />
-                          <span className="text-xs font-mono text-[#6B7280]">{label}</span>
+                          <span className="text-xs font-mono text-[#9CA3AF]">{label}</span>
                           <span className="text-xs font-bold text-white">{pct}</span>
                         </div>
                       ))}
@@ -315,9 +380,10 @@ export default function Home() {
             </div>
           </section>
 
+          {/* How It Works */}
           <section className="py-20 border-b border-[#2A2F45]">
-            <div className="mb-16">
-              <p className="text-xs font-mono text-[#6B7280] tracking-widest uppercase mb-2">
+            <div className="mb-16 anim-hidden">
+              <p className="text-xs font-mono text-[#9CA3AF] tracking-widest uppercase mb-2">
                 {t.howItWorksTag}
               </p>
               <h2 className="text-3xl font-extrabold tracking-tight text-white">
@@ -326,53 +392,58 @@ export default function Home() {
             </div>
 
             <div className="space-y-0">
-              {t.howItWorksSteps.map(({ n, col, title, body }) => (
-                <div key={n} className="group grid md:grid-cols-[7rem_1fr] items-start gap-6 py-10 border-b border-[#2A2F45] last:border-0">
-                  <span
-                    className="text-[5rem] font-extrabold leading-none select-none transition-colors duration-300"
-                    style={{ color: '#2A2F45' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = col)}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = '#2A2F45')}
-                  >
+              {t.howItWorksSteps.map(({ n, col, title, body }, i) => (
+                <div
+                  key={n}
+                  className="anim-hidden group grid md:grid-cols-[7rem_1fr] items-start gap-6 py-10 border-b border-[#2A2F45] last:border-0"
+                  style={{ transitionDelay: `${i * 100}ms` }}
+                >
+                  {/* Fix 4 (a11y): group-hover replaces onMouseEnter/onMouseLeave JS handlers */}
+                  <span className="text-[5rem] font-extrabold leading-none select-none text-[#2A2F45] group-hover:text-[#67C23A] transition-colors duration-300">
                     {n}
                   </span>
                   <div className="pt-2">
                     <span className="text-[10px] font-mono uppercase tracking-widest mb-3 block" style={{ color: col }}>STEP {n}</span>
                     <h3 className="text-2xl font-extrabold text-white mb-3">{title}</h3>
-                    <p className="text-[#6B7280] text-sm leading-relaxed max-w-xl">{body}</p>
+                    <p className="text-[#9CA3AF] text-sm leading-relaxed max-w-xl">{body}</p>
                   </div>
                 </div>
               ))}
             </div>
           </section>
 
+          {/* Insights */}
           <section className="py-20">
-            <p className="text-xs font-mono text-[#6B7280] tracking-widest uppercase mb-12">
+            <p className="text-xs font-mono text-[#9CA3AF] tracking-widest uppercase mb-12 anim-hidden">
               {t.insightsTag}
             </p>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10 bg-[#1C2030]/20 border border-[#2A2F45] rounded-3xl p-8 md:p-12">
+            <div
+              className="anim-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-10 bg-[#1C2030]/20 border border-[#2A2F45] rounded-3xl p-8 md:p-12"
+              style={{ transitionDelay: "100ms" }}
+            >
               <div>
-                <p className="text-[#6B7280] text-sm font-mono mb-3">{t.insightsSub}</p>
+                <p className="text-[#9CA3AF] text-sm font-mono mb-3">{t.insightsSub}</p>
                 <div className="flex items-baseline gap-4 mb-6">
                   <span className="text-[5rem] md:text-[7rem] font-extrabold leading-none text-white tracking-tighter">
                     19
                   </span>
-                  <div className="text-[#6B7280] text-sm leading-relaxed max-w-xs">
+                  <div className="text-[#9CA3AF] text-sm leading-relaxed max-w-xs">
                     {t.insightsDesc}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {/* Fix 4 (a11y): aria-hidden — purely decorative tag cloud */}
+                <div className="flex flex-wrap gap-x-4 gap-y-1" aria-hidden="true">
                   {[
                     "Muscle", "Squat", "Yoga", "Running", "HIIT",
                     "Protein", "Cardio", "Deadlift", "Stretching", "Nutrition",
-                  ].map((t) => (
-                    <span key={t} className="font-mono text-xs text-[#2A2F45] hover:text-[#6B7280] transition-colors">
-                      {t}
+                  ].map((topic) => (
+                    <span key={topic} className="font-mono text-xs text-[#4B5563] hover:text-[#6B7280] transition-colors">
+                      {topic}
                     </span>
                   ))}
-                  <span className="font-mono text-xs text-[#2A2F45]">+ 9 more</span>
+                  <span className="font-mono text-xs text-[#4B5563]">+ 9 more</span>
                 </div>
               </div>
 
@@ -381,14 +452,14 @@ export default function Home() {
                 className="group flex items-center gap-4 border border-[#2A2F45] hover:border-[#67C23A] rounded-2xl px-7 py-5 transition-all duration-300 hover:bg-[#67C23A]/5 shrink-0"
               >
                 <div className="text-left">
-                  <span className="block text-xs font-mono text-[#6B7280] mb-0.5">{t.insightsCtaSub}</span>
+                  <span className="block text-xs font-mono text-[#9CA3AF] mb-0.5">{t.insightsCtaSub}</span>
                   <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors">
                     {t.insightsCtaTitle}
                   </span>
                 </div>
                 <ArrowUpRight
                   size={18}
-                  className="text-[#6B7280] group-hover:text-[#67C23A] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  className="text-[#9CA3AF] group-hover:text-[#67C23A] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
               </Link>
             </div>
@@ -407,4 +478,3 @@ export default function Home() {
     </div>
   );
 }
-
